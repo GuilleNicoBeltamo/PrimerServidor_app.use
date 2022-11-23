@@ -1,10 +1,10 @@
 const express = require("express");
 const { ServiceSelect } = require("../controllers/ServiceSelect")
-const { ServiceSelectFail } = require("../controllers/ServiceSelectFail")
+const { SelectFail } = require("../controllers/SelectFail")
 
 const router = express.Router();
 
-router.get("/", ServiceSelectFail);
+router.get("/", SelectFail);
 router.get("/:id", ServiceSelect);
 
 module.exports = router;
