@@ -1,8 +1,9 @@
 const express = require("express");
-const { registro } = require("../controllers/registro")
-
 const router = express.Router();
+const { getSignupData, sendSignupForm } = require("../controllers/registro");
+const { checkUserNotSigned } = require("../middelwares/checkUserID");
 
-router.get("/", registro);
+router.get("/registro", [checkUserNotSigned], sendSignupForm);
+router.post("/registro", getSignupData);
 
 module.exports = router;

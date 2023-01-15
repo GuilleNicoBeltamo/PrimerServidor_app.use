@@ -1,8 +1,10 @@
 const express = require("express");
-const { InicioSesion } = require("../controllers/InicioSesion")
+const { getSigninData, sendSigninForm } = require("../controllers/InicioSesion");
+const { checkUserNotSigned } = require("../middelwares/checkUserID");
 
 const router = express.Router();
 
-router.get("/", InicioSesion);
+router.get("/inicio-sesion", [checkUserNotSigned], sendSigninForm);
+router.post("/inicio-sesion", getSigninData);
 
 module.exports = router;

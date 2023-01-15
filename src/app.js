@@ -1,30 +1,53 @@
 require("dotenv").config();
 const path = require("path");
-const express = require("express");
+const fs = require("fs");
 
-const userRoutes = require("./routes/users");
-const Home = require("./routes/home")
-const detailService = require("./routes/detailService")
-const inicioSesion = require("./routes/inicioSesion")
-const Registro = require("./routes/registro")
-const Carrito = require("./routes/Carrito")
+const express = require("express");
+const bodyParser = require("body-parser");
+const session = require("express-session");
+const cookieParser = require("cookie-parser");
 
 const app = express();
 
-app.set("view engine", "ejs");
+// Configuraciones de la app
+// 1- Req-Body en formato JSON
+app.use(bodyParser.urlencoded({extended: true}));
+// 2- Configuración del motor de vistas
 app.use(express.static(path.join(__dirname, "../public")));
+app.set("view engine", "ejs");
+// 3- Configuración de sesiones y cookies
+const Minutos15 = 1000*60*15;
+app.use(session({
+    saveUninitialized: true,
+    secret: process.env.SESSION_SECRET,
+    cookie: { maxAge: Minutos15 },
+    resave: false,
+}))
+app.use(cookieParser());
 
-app.use("/users",userRoutes);
+const userRoutes = require("./routes/users");
+app.use("/",userRoutes);
 
+const Home = require("./routes/home")
 app.use("/",Home);
 
-app.use("/servicio",detailService);
+const detailService = require("./routes/detailService")
+app.use("/",detailService);
 
-app.use("/inicio-sesion",inicioSesion);
+const inicioSesion = require("./routes/inicioSesion")
+app.use("/",inicioSesion);
 
-app.use("/registro",Registro);
+const Registro = require("./routes/registro");
+app.use("/", Registro);
 
-app.use("/carrito",Carrito);
+const Salida = require("./routes/signOut");
+app.use("/", Salida);
+
+const Carrito = require("./routes/Carrito")
+app.use("/", Carrito);
+
+const Resto = require("./routes/Resto")
+app.use("/", Resto);
 
 app.listen(process.env.PORT, () => {
     console.log("Servidor escuchando en puerto: ", process.env.PORT);
